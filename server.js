@@ -2,14 +2,16 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
 const path = require('path');
+const passwordEntityRoutes = require('./routes/passwordEntityRoutes')
+const authRoutes = require('./routes/authRoutes')
 
 // Database
 const db = require('./config/database')
 
 // Test DB
 db.authenticate()
-  .then(() => console.log('Database connected ✔'))
-  .catch(err => console.log('Error: ' + err))
+.then(() => console.log('Database connected ✔'))
+.catch(err => console.log('Error: ' + err))
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -27,11 +29,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => res.send('Welcome to Keeper API'))
 
 // Routes
-app.use('/passwordEntity', require('./routes/passwordEntity'));
+app.use('/passwordEntity', passwordEntityRoutes);
+app.use('/auth', authRoutes)
 
 // 404 Error
 app.use((req, res) => {
-  res.status(404).json({message: "Ooops... something went wrong"})
+  res.status(404).json({ message: "Ooops... something went wrong" })
 })
 
 app.listen(port, () => {
