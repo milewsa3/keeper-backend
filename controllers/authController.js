@@ -6,12 +6,12 @@ const handleErrors = (err) => {
   let errors = { email: '', password: '', name: '' };
 
   err.errors.forEach(el => {
-    if (el.message.includes('user.name')) {
+    if (el.path === 'name') {
       errors.name = el.message.replace(/user.name/g, 'name')
-    } else if (el.message.includes('user.email')) {
-      errors.email = el.message.replace(/user.email/g, 'name')
-    } else if (el.message.includes('user.password')) {
-      errors.password = el.message.replace(/user.password/g, 'name')
+    } else if (el.path === 'email') {
+      errors.email = el.message.replace(/user.email/g, 'email')
+    } else if (el.path === 'password') {
+      errors.password = el.message.replace(/user.password/g, 'password')
     }
   })
 
@@ -26,8 +26,14 @@ const createToken = (email, id) => {
   });
 };
 
-const validateUserForSignup = async ({ name, email, password, confirmPassword }) => {
-  let error = { name: '', email: '', password: '', confirmPassword: '' }
+const validateUserForSignup = async ({
+                                       name,
+                                       email,
+                                       password,
+                                       confirmPassword,
+                                       masterPassword
+                                     }) => {
+  let error = { name: '', email: '', password: '', confirmPassword: '', masterPassword: '' }
 
   if (!name) {
     error.name = 'Name cannot be empty'
@@ -49,6 +55,11 @@ const validateUserForSignup = async ({ name, email, password, confirmPassword })
     return { error }
   }
 
+  if (!masterPassword) {
+    error.masterPassword = 'Master password cannot be empty'
+    return { error }
+  }
+
   try {
     const existingUser = await User.findAll({ where: { email: email } })
     if (existingUser[0]) {
@@ -64,6 +75,7 @@ const validateUserForSignup = async ({ name, email, password, confirmPassword })
     return {}
   }
   catch (err) {
+    // console.log(err)
     error.email = 'Something went wrong'
     return { error }
   }
@@ -77,8 +89,8 @@ module.exports.signup_post = async (req, res) => {
   }
 
   try {
-    const { email, password, name } = req.body
-    const user = await User.create({ name, email, password })
+    const { name, email, password, masterPassword } = req.body
+    const user = await User.create({ name, email, password, masterPassword })
     const token = createToken(user.email, user.id)
     res.status(200).json({ result: user, token })
   }

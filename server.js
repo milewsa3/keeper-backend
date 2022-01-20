@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
+const cors = require('cors');
 const path = require('path');
 const passwordEntityRoutes = require('./routes/passwordEntityRoutes')
 const authRoutes = require('./routes/authRoutes')
@@ -16,10 +17,15 @@ db.authenticate()
 const app = express();
 const port = process.env.PORT || 5000;
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200 // For legacy browser support
+}
+
 // Middlewares
 app.use(express.json())
 app.use(morgan('dev'))
-// Add CORS
+app.use(cors(corsOptions))
 app.use(cookieParser())
 
 // Set static folder
