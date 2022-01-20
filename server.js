@@ -5,6 +5,7 @@ const cors = require('cors');
 const path = require('path');
 const passwordEntityRoutes = require('./routes/passwordEntityRoutes')
 const authRoutes = require('./routes/authRoutes')
+const { auth } = require('./middleware/auth');
 
 // Database
 const db = require('./config/database')
@@ -35,8 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => res.send('Welcome to Keeper API'))
 
 // Routes
-app.use('/passwordEntity', passwordEntityRoutes);
 app.use('/auth', authRoutes)
+app.use('/passwordEntity', auth, passwordEntityRoutes);
 
 // 404 Error
 app.use((req, res) => {
