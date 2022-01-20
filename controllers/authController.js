@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 const User = require('../models/User')
+const { isStrongPassword } = require('../utils/security');
 
 const handleErrors = (err) => {
   let errors = { email: '', password: '', name: '' };
@@ -57,6 +58,16 @@ const validateUserForSignup = async ({
 
   if (!masterPassword) {
     error.masterPassword = 'Master password cannot be empty'
+    return { error }
+  }
+
+  if (!isStrongPassword(password)) {
+    error.password = 'Password must be at least 8 character long, have 1 lowercase, 1 uppercase, 1 number and 1 symbol'
+    return { error }
+  }
+
+  if (!isStrongPassword(masterPassword)) {
+    error.masterPassword = 'Master password must be at least 8 character long, have 1 lowercase, 1 uppercase, 1 number and 1 symbol'
     return { error }
   }
 
