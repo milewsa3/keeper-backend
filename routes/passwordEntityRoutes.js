@@ -1,41 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../config/database');
-const PasswordEntityRoutes = require('../models/PasswordEntity');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const { Router } = require('express');
+const passwordEntityController = require('../controllers/passwordEntityController');
 
-// Get all PasswordEntities
-router.get('/', (req, res) =>
-  PasswordEntityRoutes.findAll()
-  .then(result => res.json(result))
-  .catch(err => res.status(400).json('Error: ' + err)))
+const router = Router();
 
-// Add a PasswordEntityRoutes
-router.post('/', (req, res) => {
-  let { page_url, password } = req.body;
-  let errors = [];
-
-  // Validate Fields
-  if (!page_url) {
-    errors.push({ text: 'Please add a page url' });
-  }
-  if (!password) {
-    errors.push({ text: 'Please add password' });
-  }
-
-  // Check for errors
-  if (errors.length > 0) {
-    res.status(400).json(JSON.stringify(errors))
-    return
-  }
-
-  PasswordEntityRoutes.create({
-    page_url,
-    password,
-  })
-  .then(result => res.json(result))
-  .catch(err => res.status(400).json('Error: ' + err))
-});
-
+router.get('/', passwordEntityController.get_all);
+router.get('/:userId', passwordEntityController.get_all_for_user)
+router.get('/:userId/:entityId/encrypted', passwordEntityController.get_entity_encrypted)
+router.get('/:userId/:entityId/:masterPassword/decrypted',
+  passwordEntityController.get_entity_decrypted)
+router.post('/:userId', passwordEntityController.post_for_user)
 module.exports = router;

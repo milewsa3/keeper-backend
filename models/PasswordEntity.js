@@ -1,16 +1,20 @@
 const Sequelize = require('sequelize');
 const db = require('../config/database');
+const { hashPassword, hashPasswordEntity, encryptPasswordEntity } = require('../utils/security');
 
 const PasswordEntity = db.define('passwordEntity', {
-  page_url: {
+  pageUrl: {
     type: Sequelize.STRING
   },
   password: {
     type: Sequelize.STRING
   },
-  salt: {
+  iv: {
     type: Sequelize.STRING
   },
+  userId: {
+    type: Sequelize.INTEGER
+  }
 });
 
 PasswordEntity.sync().then(() => {

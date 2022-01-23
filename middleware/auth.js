@@ -7,7 +7,8 @@ const auth = async (req, res, next) => {
     req.userId = decodedToken?.id
 
     next()
-  } catch (error) {
+  }
+  catch (error) {
     res.status(401).json({
       error: 'Request not authenticated'
     })
