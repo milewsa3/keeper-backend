@@ -86,8 +86,8 @@ const validateUserForSignup = async ({
     return {}
   }
   catch (err) {
-    // console.log(err)
-    error.email = 'Something went wrong'
+    console.log(err)
+    error.email = err.message
     return { error }
   }
 }
