@@ -142,7 +142,7 @@ const validateUserForSignin = async ({ email, password }) => {
   }
   catch (err) {
     console.log(err)
-    error.email = 'Something went wrong'
+    error.email = err.message
     return { error }
   }
 }
