@@ -19,7 +19,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: 'https://milewsa3.github.io',
+  origin: process.env.ORIGIN,
   optionsSuccessStatus: 200 // For legacy browser support
 }
 

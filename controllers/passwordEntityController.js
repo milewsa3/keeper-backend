@@ -9,14 +9,8 @@ const bcrypt = require('bcrypt');
 const Op = Sequelize.Op;
 const User = require('../models/User')
 
-module.exports.get_all = async (req, res) => {
-  PasswordEntityRoutes.findAll()
-  .then(result => res.json(result))
-  .catch(err => res.status(400).json('Error: ' + err))
-}
-
 module.exports.get_all_for_user = async (req, res) => {
-  const userId = req.params.userId
+  const userId = req.userId
 
   if (!userId) {
     res.status(400).json('Error: UserId cannot be empty')
@@ -34,10 +28,10 @@ module.exports.get_all_for_user = async (req, res) => {
 const validate_post_for_user = async (req) => {
   let error = { pageUrl: '', password: '', masterPassword: '' }
   const body = req.body
-  const userId = req.params.userId
+  const userId = req.userId
 
-  if (userId) {
-    error.masterPassword = 'Error occurred'
+  if (!userId) {
+    error.masterPassword = 'User id cannot be empty'
   }
 
   if (!body.pageUrl) {
@@ -79,7 +73,7 @@ module.exports.post_for_user = async (req, res) => {
     return
   }
 
-  const userId = req.params.userId
+  const userId = req.userId
 
   try {
     const { pageUrl, password, masterPassword } = req.body
@@ -95,7 +89,8 @@ module.exports.post_for_user = async (req, res) => {
 }
 
 module.exports.get_entity_encrypted = async (req, res) => {
-  const { userId, entityId } = req.params
+  const entityId = req.params.entityId
+  const userId = req.userId
 
   PasswordEntityRoutes.findOne({
     where: {
@@ -142,7 +137,8 @@ const validate_get_entity_decrypted = async (data) => {
 }
 
 module.exports.get_entity_decrypted = async (req, res) => {
-  const { userId, entityId, masterPassword } = req.params
+  const { entityId, masterPassword } = req.params
+  const userId = req.userId
   const result = await validate_get_entity_decrypted({ userId, entityId, masterPassword })
 
   if (result.error) {

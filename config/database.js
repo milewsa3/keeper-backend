@@ -3,6 +3,17 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const ssl_config = () => {
+  if (process.env.SSL_ENABLED === 'true') {
+    return {
+      require: process.env.SSL_REQUIRED === 'true',
+      rejectUnauthorized: process.env.SSL_REJECT_UNAUTHORIZED === 'true'
+    }
+  } else {
+    return false
+  }
+}
+
 module.exports = new Sequelize(process.env.DATABASE_NAME,
   process.env.DATABASE_USERNAME,
   process.env.DATABASE_PASSWORD,
@@ -17,9 +28,6 @@ module.exports = new Sequelize(process.env.DATABASE_NAME,
       idle: 10000
     },
     dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
+      ssl: ssl_config(),
     },
   });
