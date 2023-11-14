@@ -1,0 +1,8 @@
+{
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  "appService.defaultWebAppToDeploy": "/subscriptions/df1c095e-6159-4e70-970b-f86519b3a688/resourceGroups/resource_group/providers/Microsoft.Web/sites/keeper-backend",
+  "appService.deploySubpath": "."
+}
